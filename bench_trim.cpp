@@ -1,9 +1,24 @@
+/**
+ * @file bench_trim.cpp
+ * @brief 测试字符串 trim 的性能
+ * @author gemini
+ * @date 2025-06-23
+ * @version 1.0
+ * @details
+ * 该文件使用 Google Benchmark 库来测试不同字符串修剪方法的性能。
+ * 三种方法包括：
+ * 1. 使用 `std::string_view` 和手动 trim。
+ * 2. 使用 `std::string::find_first_not_of` 和 `substr` 
+ * 3. 使用 Boost 库的 `boost::algorithm::trim_copy`。
+ * @note
+ * 需要安装 Google Benchmark 和 Boost 库。
+ */
+
 #include <benchmark/benchmark.h>
 #include <string>
 #include <string_view>
 #include <cctype>
-#include <algorithm>
-#include <boost/algorithm/string.hpp> // apt install libboost-all-dev
+#include <boost/algorithm/string.hpp> // install boost
 
 static const std::string kSample = "   \t  hello world  \n  ";
 
