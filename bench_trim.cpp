@@ -66,4 +66,81 @@ static void TrimBoost(benchmark::State& state) {
 BENCHMARK(TrimBoost);
 
 
+static std::string trim(const std::string& s) {
+    auto start = s.begin();
+    while (start != s.end() && std::isspace(*start)) start++;
+
+    auto end = s.end();
+    do {
+        end--;
+    } while (std::distance(start, end) > 0 && std::isspace(*end));
+
+    return std::string(start, end + 1);
+}
+
+static void TrimCustom(benchmark::State& state) {
+    for (auto _ : state) {
+        std::string trimmed = trim(kSample);
+        benchmark::DoNotOptimize(trimmed);
+    }
+}
+BENCHMARK(TrimCustom);
+
+
+int chushi_rtrim(char *str, const char *charlist)
+{
+	char	*p;
+	int	count = 0;
+
+	if (NULL == str || '\0' == *str)
+		return count;
+
+	for (p = str + strlen(str) - 1; p >= str && NULL != strchr(charlist, *p); p--)
+	{
+		*p = '\0';
+		count++;
+	}
+
+	return count;
+}
+
+/******************************************************************************
+ *                                                                            *
+ * Purpose: strips characters from beginning of string                        *
+ *                                                                            *
+ * Parameters: str      - [IN/OUT] string for processing                      *
+ *             charlist - [IN]     null terminated list of characters         *
+ *                                                                            *
+ ******************************************************************************/
+void chushi_ltrim(char *str, const char *charlist)
+{
+	char	*p;
+
+	if (NULL == str || '\0' == *str)
+		return;
+
+	for (p = str; '\0' != *p && NULL != strchr(charlist, *p); p++)
+		;
+
+	if (p == str)
+		return;
+
+	while ('\0' != *p)
+		*str++ = *p++;
+
+	*str = '\0';
+}
+
+static void TrimChushi(benchmark::State& state) {
+    for (auto _ : state) {
+        char buffer[256];
+        strncpy(buffer, kSample.c_str(), sizeof(buffer) - 1);
+        buffer[sizeof(buffer) - 1] = '\0'; // 确保字符串以 null 结尾
+        chushi_ltrim(buffer, " \t");
+        chushi_rtrim(buffer, " \t\n\r");
+        benchmark::DoNotOptimize(buffer);
+    }
+}
+BENCHMARK(TrimChushi);
+
 BENCHMARK_MAIN();
