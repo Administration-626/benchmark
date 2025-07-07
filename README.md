@@ -7,3 +7,4 @@
 sudo pacman -S benchmark
 ```
 
+[用户指南](https://github.com/google/benchmark/blob/main/docs/user_guide.md)
